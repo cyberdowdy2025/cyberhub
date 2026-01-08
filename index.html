@@ -4,758 +4,437 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CyberHub - Cybersecurity Training Simulations</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 50%, #0f1729 100%);
-            color: #e0e0e0;
-            min-height: 100vh;
-            overflow-x: hidden;
-        }
-
-        .stars {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 0;
-        }
-
-        .star {
-            position: absolute;
-            width: 2px;
-            height: 2px;
-            background: white;
-            border-radius: 50%;
-            animation: twinkle 3s infinite;
-        }
-
-        @keyframes twinkle {
-            0%, 100% { opacity: 0.3; }
-            50% { opacity: 1; }
-        }
-
-        .binary-bg {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 0;
-            overflow: hidden;
-        }
-
-        .binary-stream {
-            position: absolute;
-            font-family: 'Courier New', monospace;
-            font-size: 14px;
-            color: rgba(0, 255, 255, 0.3);
-            white-space: nowrap;
-            animation: fall linear infinite;
-        }
-
-        @keyframes fall {
-            0% {
-                transform: translateY(-100%);
-                opacity: 0;
-            }
-            10% {
-                opacity: 1;
-            }
-            90% {
-                opacity: 1;
-            }
-            100% {
-                transform: translateY(100vh);
-                opacity: 0;
-            }
-        }
-
-        .countdown-container {
-            position: relative;
-            z-index: 1;
-            text-align: center;
-            padding: 20px;
-            margin-bottom: 20px;
-            background: rgba(0, 255, 255, 0.1);
-            border: 2px solid rgba(0, 255, 255, 0.3);
-            border-radius: 15px;
-            box-shadow: 0 0 30px rgba(0, 255, 255, 0.2);
-        }
-
-        .countdown-title {
-            font-size: 1.5em;
-            color: #00ffff;
-            margin-bottom: 15px;
-            text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
-        }
-
-        .countdown-timer {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            flex-wrap: wrap;
-        }
-
-        .time-unit {
-            background: rgba(20, 25, 45, 0.8);
-            border: 2px solid rgba(0, 255, 255, 0.4);
-            border-radius: 10px;
-            padding: 15px 20px;
-            min-width: 80px;
-        }
-
-        .time-value {
-            font-size: 2.5em;
-            font-weight: bold;
-            color: #00ffff;
-            text-shadow: 0 0 15px rgba(0, 255, 255, 0.7);
-        }
-
-        .time-label {
-            font-size: 0.9em;
-            color: #888;
-            margin-top: 5px;
-        }
-
-        .container {
-            position: relative;
-            z-index: 1;
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
-        header {
-            text-align: center;
-            padding: 60px 20px;
-            background: linear-gradient(135deg, rgba(0, 255, 255, 0.1) 0%, rgba(138, 43, 226, 0.1) 100%);
-            border-radius: 20px;
-            margin-bottom: 50px;
-            border: 2px solid rgba(0, 255, 255, 0.3);
-            box-shadow: 0 0 40px rgba(0, 255, 255, 0.2);
-        }
-
-        h1 {
-            font-size: 3.5em;
-            background: linear-gradient(135deg, #00ffff, #ff00ff, #00ffff);
-            background-size: 200% 200%;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            animation: gradient 3s ease infinite;
-            margin-bottom: 15px;
-            text-shadow: 0 0 30px rgba(0, 255, 255, 0.5);
-        }
-
-        @keyframes gradient {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        .subtitle {
-            font-size: 1.3em;
-            color: #00ffff;
-            text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
-        }
-
-        .cert-section {
-            margin-bottom: 60px;
-            padding: 30px;
-            background: rgba(20, 25, 45, 0.7);
-            border-radius: 15px;
-            border: 1px solid rgba(0, 255, 255, 0.2);
-            backdrop-filter: blur(10px);
-            transition: all 0.3s ease;
-        }
-
-        .cert-section:hover {
-            border-color: rgba(0, 255, 255, 0.5);
-            box-shadow: 0 0 30px rgba(0, 255, 255, 0.2);
-        }
-
-        .cert-header {
-            display: flex;
-            align-items: center;
-            margin-bottom: 30px;
-            padding-bottom: 20px;
-            border-bottom: 2px solid rgba(0, 255, 255, 0.3);
-        }
-
-        .cert-icon {
-            width: 60px;
-            height: 60px;
-            margin-right: 20px;
-            background: linear-gradient(135deg, #00ffff, #ff00ff);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2em;
-            font-weight: bold;
-            box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
-        }
-
-        .cert-title {
-            font-size: 2.2em;
-            color: #00ffff;
-            text-shadow: 0 0 15px rgba(0, 255, 255, 0.5);
-        }
-
-        .simulations-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-            gap: 25px;
-        }
-
-        .sim-card {
-            background: linear-gradient(135deg, rgba(30, 35, 55, 0.9), rgba(20, 25, 45, 0.9));
-            border: 2px solid rgba(0, 255, 255, 0.3);
-            border-radius: 12px;
-            padding: 25px;
-            transition: all 0.3s ease;
-            cursor: pointer;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .sim-card::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: linear-gradient(45deg, transparent, rgba(0, 255, 255, 0.1), transparent);
-            transform: rotate(45deg);
-            transition: all 0.5s ease;
-        }
-
-        .sim-card:hover::before {
-            left: 100%;
-        }
-
-        .sim-card:hover {
-            transform: translateY(-5px);
-            border-color: #00ffff;
-            box-shadow: 0 10px 40px rgba(0, 255, 255, 0.3);
-        }
-
-        .sim-title {
-            font-size: 1.3em;
-            color: #ffffff;
-            margin-bottom: 15px;
-            position: relative;
-            z-index: 1;
-        }
-
-        .sim-description {
-            color: #b0b0b0;
-            margin-bottom: 20px;
-            line-height: 1.6;
-            position: relative;
-            z-index: 1;
-        }
-
-        .sim-link {
-            display: inline-block;
-            padding: 12px 25px;
-            background: linear-gradient(135deg, #00ffff, #0099ff);
-            color: #000;
-            text-decoration: none;
-            border-radius: 8px;
-            font-weight: bold;
-            transition: all 0.3s ease;
-            position: relative;
-            z-index: 1;
-            box-shadow: 0 0 15px rgba(0, 255, 255, 0.4);
-        }
-
-        .sim-link:hover {
-            background: linear-gradient(135deg, #00ffff, #00ccff);
-            box-shadow: 0 0 25px rgba(0, 255, 255, 0.6);
-            transform: scale(1.05);
-        }
-
-        .level-badge {
-            display: inline-block;
-            padding: 5px 12px;
-            background: rgba(255, 0, 255, 0.3);
-            border: 1px solid #ff00ff;
-            border-radius: 20px;
-            font-size: 0.85em;
-            margin-bottom: 10px;
-            color: #ff00ff;
-        }
-
-        .password-protected {
-            position: relative;
-        }
-
-        .password-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(10, 14, 39, 0.95);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            border-radius: 12px;
-            z-index: 10;
-        }
-
-        .password-input {
-            padding: 12px 20px;
-            font-size: 1em;
-            border: 2px solid rgba(0, 255, 255, 0.5);
-            border-radius: 8px;
-            background: rgba(20, 25, 45, 0.9);
-            color: #00ffff;
-            margin-top: 15px;
-            outline: none;
-            text-align: center;
-        }
-
-        .password-input::placeholder {
-            color: rgba(0, 255, 255, 0.5);
-        }
-
-        .password-btn {
-            padding: 10px 25px;
-            margin-top: 10px;
-            background: linear-gradient(135deg, #00ffff, #0099ff);
-            color: #000;
-            border: none;
-            border-radius: 8px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .password-btn:hover {
-            background: linear-gradient(135deg, #00ffff, #00ccff);
-            box-shadow: 0 0 20px rgba(0, 255, 255, 0.6);
-        }
-
-        .lock-icon {
-            font-size: 3em;
-            color: #00ffff;
-            text-shadow: 0 0 20px rgba(0, 255, 255, 0.7);
-        }
-
-        .password-text {
-            color: #00ffff;
-            margin-top: 10px;
-            font-size: 1.1em;
-        }
-
-        .error-message {
-            color: #ff0066;
-            margin-top: 10px;
-            font-size: 0.9em;
-        }
-
-        footer {
-            text-align: center;
-            padding: 40px;
-            margin-top: 60px;
-            border-top: 2px solid rgba(0, 255, 255, 0.3);
-            color: #888;
-        }
-
-        @media (max-width: 768px) {
-            h1 {
-                font-size: 2.5em;
-            }
-
-            .simulations-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .cert-title {
-                font-size: 1.8em;
-            }
-
-            .time-value {
-                font-size: 2em;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="stars" id="stars"></div>
-    <div class="binary-bg" id="binaryBg"></div>
+    <!-- Matrix-style binary rain background -->
+    <canvas id="matrix-canvas"></canvas>
 
+    <!-- Main Container -->
     <div class="container">
-        <!-- Countdown Timer -->
-        <div class="countdown-container">
-            <div class="countdown-title">🎆 New Year 2026 Countdown 🎆</div>
-            <div class="countdown-timer" id="countdown">
-                <div class="time-unit">
-                    <div class="time-value" id="days">00</div>
-                    <div class="time-label">Days</div>
-                </div>
-                <div class="time-unit">
-                    <div class="time-value" id="hours">00</div>
-                    <div class="time-label">Hours</div>
-                </div>
-                <div class="time-unit">
-                    <div class="time-value" id="minutes">00</div>
-                    <div class="time-label">Minutes</div>
-                </div>
-                <div class="time-unit">
-                    <div class="time-value" id="seconds">00</div>
-                    <div class="time-label">Seconds</div>
-                </div>
-            </div>
-        </div>
-
+        <!-- Header -->
         <header>
-            <h1>🛡️ CYBERHUB 🛡️</h1>
-            <p class="subtitle">Advanced Cybersecurity Training Simulations</p>
+            <div class="logo">
+                <h1>CYBER<span class="highlight">HUB</span></h1>
+                <p class="tagline">Advanced Cybersecurity Training Platform</p>
+            </div>
+            <div class="visitor-counter">
+                <span class="counter-label">Visitors:</span>
+                <span id="visitor-count" class="counter-value">0</span>
+            </div>
         </header>
 
-        <!-- CyberHub Main Link -->
-        <div class="cert-section">
-            <div class="cert-header">
-                <div class="cert-icon">🌐</div>
-                <h2 class="cert-title">CyberHub Portal</h2>
+        <!-- Hero Section -->
+        <section class="hero">
+            <h2>Master Cybersecurity Through Interactive Simulations</h2>
+            <p>Hands-on training for CompTIA certifications and beyond</p>
+        </section>
+
+        <!-- CompTIA A+ Section -->
+        <section class="certification-section">
+            <div class="section-header">
+                <h2 class="cert-title">
+                    <span class="cert-icon">🖥️</span>
+                    CompTIA A+ Simulations
+                </h2>
+                <div class="cert-badge a-plus">A+</div>
             </div>
             <div class="simulations-grid">
                 <div class="sim-card">
-                    <div class="level-badge">Main Portal</div>
-                    <h3 class="sim-title">CyberHub Central</h3>
-                    <p class="sim-description">Access the main CyberHub portal with all integrated cybersecurity training resources and tools.</p>
-                    <a href="https://cyberdowdy2025.github.io/cyberhub/" class="sim-link" target="_blank">Launch Portal →</a>
+                    <div class="card-header">
+                        <h3>Windows Command Prompt I</h3>
+                        <span class="cert-tag a-plus-tag">A+</span>
+                    </div>
+                    <p class="card-description">Master essential Windows command-line operations and system administration tasks.</p>
+                    <a href="https://cyberdowdy2025.github.io/Windows-Command-Prompt-I/" target="_blank" rel="noopener noreferrer" class="launch-btn">
+                        <span>Launch Simulation</span>
+                        <span class="arrow">→</span>
+                    </a>
+                </div>
+
+                <div class="sim-card">
+                    <div class="card-header">
+                        <h3>Windows Command Prompt II</h3>
+                        <span class="cert-tag a-plus-tag">A+</span>
+                    </div>
+                    <p class="card-description">Advanced command-line techniques for troubleshooting and system optimization.</p>
+                    <a href="https://cyberdowdy2025.github.io/Windows-Command-Prompt-II/" target="_blank" rel="noopener noreferrer" class="launch-btn">
+                        <span>Launch Simulation</span>
+                        <span class="arrow">→</span>
+                    </a>
+                </div>
+
+                <div class="sim-card">
+                    <div class="card-header">
+                        <h3>Troubleshooting Simulation</h3>
+                        <span class="cert-tag a-plus-tag">A+</span>
+                    </div>
+                    <p class="card-description">Diagnose and resolve common hardware and software issues in real-world scenarios.</p>
+                    <a href="https://cyberdowdy2025.github.io/Troubleshooting-Simulation/" target="_blank" rel="noopener noreferrer" class="launch-btn">
+                        <span>Launch Simulation</span>
+                        <span class="arrow">→</span>
+                    </a>
                 </div>
             </div>
-        </div>
+        </section>
 
-        <!-- A+ Certification -->
-        <div class="cert-section">
-            <div class="cert-header">
-                <div class="cert-icon">A+</div>
-                <h2 class="cert-title">A+ Certification</h2>
-            </div>
-            <div class="simulations-grid">
-                <div class="sim-card">
-                    <div class="level-badge">Command Line</div>
-                    <h3 class="sim-title">Windows Command Prompt I</h3>
-                    <p class="sim-description">Master basic Windows command line operations and essential system commands for IT professionals.</p>
-                    <a href="https://cyberdowdy2025.github.io/Windows-Command-Prompt-I/" class="sim-link" target="_blank">Launch Simulation →</a>
-                </div>
-
-                <div class="sim-card">
-                    <div class="level-badge">Advanced CLI</div>
-                    <h3 class="sim-title">Windows Command Prompt II</h3>
-                    <p class="sim-description">Advanced command prompt techniques including scripting, automation, and system administration tasks.</p>
-                    <a href="https://cyberdowdy2025.github.io/Windows-Command-Prompt-II/" class="sim-link" target="_blank">Launch Simulation →</a>
-                </div>
-            </div>
-        </div>
-
-        <!-- Network+ Certification -->
-        <div class="cert-section">
-            <div class="cert-header">
-                <div class="cert-icon">N+</div>
-                <h2 class="cert-title">Network+ Certification</h2>
-            </div>
-            <div class="simulations-grid">
-                <div class="sim-card">
-                    <div class="level-badge">Fundamentals</div>
-                    <h3 class="sim-title">Ports & Protocols</h3>
-                    <p class="sim-description">Learn essential network ports and protocols used in modern networking and cybersecurity.</p>
-                    <a href="https://cyberdowdy2025.github.io/Ports-Protocols/" class="sim-link" target="_blank">Launch Simulation →</a>
-                </div>
-
-                <div class="sim-card">
-                    <div class="level-badge">Network Design</div>
-                    <h3 class="sim-title">Network Topology</h3>
-                    <p class="sim-description">Explore different network topologies and understand their applications in real-world scenarios.</p>
-                    <a href="https://cyberdowdy2025.github.io/Network-Topology/" class="sim-link" target="_blank">Launch Simulation →</a>
-                </div>
-
-                <div class="sim-card">
-                    <div class="level-badge">Tutorial</div>
-                    <h3 class="sim-title">Network Topology Tutorial</h3>
-                    <p class="sim-description">Step-by-step guided tutorial on designing and implementing network topologies.</p>
-                    <a href="https://cyberdowdy2025.github.io/Network-Topology-Tutorial/" class="sim-link" target="_blank">Launch Simulation →</a>
-                </div>
-
-                <div class="sim-card">
-                    <div class="level-badge">Analysis</div>
-                    <h3 class="sim-title">Network Identifier</h3>
-                    <p class="sim-description">Practice identifying network components, devices, and their roles in network infrastructure.</p>
-                    <a href="https://cyberdowdy2025.github.io/Network-Identifier/" class="sim-link" target="_blank">Launch Simulation →</a>
-                </div>
-
-                <div class="sim-card">
-                    <div class="level-badge">Challenge</div>
-                    <h3 class="sim-title">Network Troubleshoot Challenge</h3>
-                    <p class="sim-description">Test your network troubleshooting skills by diagnosing and resolving common network issues.</p>
-                    <a href="https://cyberdowdy2025.github.io/Network-Troubleshoot-Challenge/" class="sim-link" target="_blank">Launch Simulation →</a>
-                </div>
-
-                <div class="sim-card">
-                    <div class="level-badge">Advanced Challenge</div>
-                    <h3 class="sim-title">Network Command Prompt Challenge</h3>
-                    <p class="sim-description">Advanced networking challenge using command-line tools for network diagnostics and management.</p>
-                    <a href="https://cyberdowdy2025.github.io/Network-Command-Prompt-Challenge/" class="sim-link" target="_blank">Launch Simulation →</a>
-                </div>
-            </div>
-        </div>
-
-        <!-- Security+ Certification -->
-        <div class="cert-section">
-            <div class="cert-header">
-                <div class="cert-icon">S+</div>
-                <h2 class="cert-title">Security+ Certification</h2>
+        <!-- CompTIA Network+ Section -->
+        <section class="certification-section">
+            <div class="section-header">
+                <h2 class="cert-title">
+                    <span class="cert-icon">🌐</span>
+                    CompTIA Network+ Simulations
+                </h2>
+                <div class="cert-badge network-plus">N+</div>
             </div>
             <div class="simulations-grid">
                 <div class="sim-card">
-                    <div class="level-badge">Threat Detection</div>
-                    <h3 class="sim-title">Phishing Simulation Version 3</h3>
-                    <p class="sim-description">Identify and analyze phishing attempts to protect against social engineering attacks.</p>
-                    <a href="https://cyberdowdy2025.github.io/Phishing-Simulation-Version-3/" class="sim-link" target="_blank">Launch Simulation →</a>
+                    <div class="card-header">
+                        <h3>Ports & Protocols</h3>
+                        <span class="cert-tag network-plus-tag">Network+</span>
+                    </div>
+                    <p class="card-description">Learn essential network ports and protocols used in modern networking environments.</p>
+                    <a href="https://cyberdowdy2025.github.io/Ports-Protocols/" target="_blank" rel="noopener noreferrer" class="launch-btn">
+                        <span>Launch Simulation</span>
+                        <span class="arrow">→</span>
+                    </a>
                 </div>
 
                 <div class="sim-card">
-                    <div class="level-badge">Advanced Threat</div>
-                    <h3 class="sim-title">Advanced Phishing Simulation</h3>
-                    <p class="sim-description">Advanced phishing detection scenarios with sophisticated attack vectors and social engineering techniques.</p>
-                    <a href="https://cyberdowdy2025.github.io/Advance-Phishing-Simulation/" class="sim-link" target="_blank">Launch Simulation →</a>
+                    <div class="card-header">
+                        <h3>Network Topology</h3>
+                        <span class="cert-tag network-plus-tag">Network+</span>
+                    </div>
+                    <p class="card-description">Understand network architectures and design principles for optimal performance.</p>
+                    <a href="https://cyberdowdy2025.github.io/Network-Topology/" target="_blank" rel="noopener noreferrer" class="launch-btn">
+                        <span>Launch Simulation</span>
+                        <span class="arrow">→</span>
+                    </a>
                 </div>
 
                 <div class="sim-card">
-                    <div class="level-badge">Malware Analysis</div>
-                    <h3 class="sim-title">Malware Analysis</h3>
-                    <p class="sim-description">Analyze malicious software behavior and learn detection and mitigation techniques.</p>
-                    <a href="https://cyberdowdy2025.github.io/Malware-Analysis/" class="sim-link" target="_blank">Launch Simulation →</a>
+                    <div class="card-header">
+                        <h3>Network Topology Tutorial</h3>
+                        <span class="cert-tag network-plus-tag">Network+</span>
+                    </div>
+                    <p class="card-description">Interactive tutorial covering network design patterns and implementation strategies.</p>
+                    <a href="https://cyberdowdy2025.github.io/Network-Topology-Tutorial/" target="_blank" rel="noopener noreferrer" class="launch-btn">
+                        <span>Launch Simulation</span>
+                        <span class="arrow">→</span>
+                    </a>
                 </div>
 
                 <div class="sim-card">
-                    <div class="level-badge">Level 1</div>
-                    <h3 class="sim-title">Firewall Configuration - Level 1</h3>
-                    <p class="sim-description">Learn basic firewall configuration and rule management for network security.</p>
-                    <a href="https://cyberdowdy2025.github.io/Firewall-Lvl-1/" class="sim-link" target="_blank">Launch Simulation →</a>
+                    <div class="card-header">
+                        <h3>Network Identifier</h3>
+                        <span class="cert-tag network-plus-tag">Network+</span>
+                    </div>
+                    <p class="card-description">Practice identifying network components, devices, and configuration parameters.</p>
+                    <a href="https://cyberdowdy2025.github.io/Network-Identifier/" target="_blank" rel="noopener noreferrer" class="launch-btn">
+                        <span>Launch Simulation</span>
+                        <span class="arrow">→</span>
+                    </a>
                 </div>
 
                 <div class="sim-card">
-                    <div class="level-badge">Level 2</div>
-                    <h3 class="sim-title">Firewall Configuration - Level 2</h3>
-                    <p class="sim-description">Advanced firewall configuration including complex rule sets and security policies.</p>
-                    <a href="https://cyberdowdy2025.github.io/Firewall-Lvl-2/" class="sim-link" target="_blank">Launch Simulation →</a>
+                    <div class="card-header">
+                        <h3>Network Troubleshoot Challenge</h3>
+                        <span class="cert-tag network-plus-tag">Network+</span>
+                    </div>
+                    <p class="card-description">Solve complex network issues using systematic troubleshooting methodologies.</p>
+                    <a href="https://cyberdowdy2025.github.io/Network-Troubleshoot-Challenge/" target="_blank" rel="noopener noreferrer" class="launch-btn">
+                        <span>Launch Simulation</span>
+                        <span class="arrow">→</span>
+                    </a>
+                </div>
+
+                <div class="sim-card">
+                    <div class="card-header">
+                        <h3>Network Command Prompt Challenge</h3>
+                        <span class="cert-tag network-plus-tag">Network+</span>
+                    </div>
+                    <p class="card-description">Master network diagnostic commands and tools for effective troubleshooting.</p>
+                    <a href="https://cyberdowdy2025.github.io/Network-Command-Prompt-Challenge/" target="_blank" rel="noopener noreferrer" class="launch-btn">
+                        <span>Launch Simulation</span>
+                        <span class="arrow">→</span>
+                    </a>
                 </div>
             </div>
-        </div>
+        </section>
 
-        <!-- Prototype Simulations -->
-        <div class="cert-section">
-            <div class="cert-header">
-                <div class="cert-icon">🧪</div>
-                <h2 class="cert-title">Prototype Simulations</h2>
+        <!-- CompTIA Security+ Section -->
+        <section class="certification-section">
+            <div class="section-header">
+                <h2 class="cert-title">
+                    <span class="cert-icon">🔒</span>
+                    CompTIA Security+ Simulations
+                </h2>
+                <div class="cert-badge security-plus">Sec+</div>
             </div>
             <div class="simulations-grid">
                 <div class="sim-card">
-                    <div class="level-badge">Prototype</div>
-                    <h3 class="sim-title">Firewall I</h3>
-                    <p class="sim-description">Early prototype of firewall configuration training with basic security concepts.</p>
-                    <a href="https://cyberdowdy2025.github.io/Firewall-I/" class="sim-link" target="_blank">Launch Simulation →</a>
+                    <div class="card-header">
+                        <h3>Phishing Simulation V3</h3>
+                        <span class="cert-tag security-plus-tag">Security+</span>
+                    </div>
+                    <p class="card-description">Identify and defend against sophisticated phishing attacks and social engineering.</p>
+                    <a href="https://cyberdowdy2025.github.io/Phishing-Simulation-Version-3/" target="_blank" rel="noopener noreferrer" class="launch-btn">
+                        <span>Launch Simulation</span>
+                        <span class="arrow">→</span>
+                    </a>
                 </div>
 
                 <div class="sim-card">
-                    <div class="level-badge">Prototype</div>
-                    <h3 class="sim-title">Firewall II</h3>
-                    <p class="sim-description">Advanced prototype firewall simulation with enhanced features and scenarios.</p>
-                    <a href="https://cyberdowdy2025.github.io/Firewall-II/" class="sim-link" target="_blank">Launch Simulation →</a>
+                    <div class="card-header">
+                        <h3>Advanced Phishing Simulation</h3>
+                        <span class="cert-tag security-plus-tag">Security+</span>
+                    </div>
+                    <p class="card-description">Advanced scenarios featuring complex phishing techniques and countermeasures.</p>
+                    <a href="https://cyberdowdy2025.github.io/Advance-Phishing-Simulation/" target="_blank" rel="noopener noreferrer" class="launch-btn">
+                        <span>Launch Simulation</span>
+                        <span class="arrow">→</span>
+                    </a>
                 </div>
 
                 <div class="sim-card">
-                    <div class="level-badge">Prototype</div>
-                    <h3 class="sim-title">Malware Identity Quest</h3>
-                    <p class="sim-description">Interactive quest-based malware identification and analysis training prototype.</p>
-                    <a href="https://cyberdowdy2025.github.io/Malware-Identity-Quest/" class="sim-link" target="_blank">Launch Simulation →</a>
+                    <div class="card-header">
+                        <h3>Malware Analysis</h3>
+                        <span class="cert-tag security-plus-tag">Security+</span>
+                    </div>
+                    <p class="card-description">Analyze malware behavior, identify threats, and implement mitigation strategies.</p>
+                    <a href="https://cyberdowdy2025.github.io/Malware-Analysis/" target="_blank" rel="noopener noreferrer" class="launch-btn">
+                        <span>Launch Simulation</span>
+                        <span class="arrow">→</span>
+                    </a>
                 </div>
 
                 <div class="sim-card">
-                    <div class="level-badge">Prototype</div>
-                    <h3 class="sim-title">NetOps Game</h3>
-                    <p class="sim-description">Gamified network operations simulation for hands-on learning experience.</p>
-                    <a href="https://cyberdowdy2025.github.io/NetOps-Game/" class="sim-link" target="_blank">Launch Simulation →</a>
+                    <div class="card-header">
+                        <h3>Firewall Configuration Level 1</h3>
+                        <span class="cert-tag security-plus-tag">Security+</span>
+                    </div>
+                    <p class="card-description">Learn fundamental firewall rules and network security configurations.</p>
+                    <a href="https://cyberdowdy2025.github.io/Firewall-Lvl-1/" target="_blank" rel="noopener noreferrer" class="launch-btn">
+                        <span>Launch Simulation</span>
+                        <span class="arrow">→</span>
+                    </a>
                 </div>
 
                 <div class="sim-card">
-                    <div class="level-badge">Prototype</div>
-                    <h3 class="sim-title">Phishing Arcade Game</h3>
-                    <p class="sim-description">Arcade-style phishing detection game for engaging security awareness training.</p>
-                    <a href="https://cyberdowdy2025.github.io/Phishing-Arcade-Game/" class="sim-link" target="_blank">Launch Simulation →</a>
-                </div>
-
-                <div class="sim-card">
-                    <div class="level-badge">Prototype</div>
-                    <h3 class="sim-title">Phishing Simulation II</h3>
-                    <p class="sim-description">Second iteration of phishing simulation with improved detection mechanics.</p>
-                    <a href="https://cyberdowdy2025.github.io/Phishing-Simulation-II/" class="sim-link" target="_blank">Launch Simulation →</a>
-                </div>
-
-                <div class="sim-card">
-                    <div class="level-badge">Prototype</div>
-                    <h3 class="sim-title">Ports & Protocols Classic</h3>
-                    <p class="sim-description">Classic version of the ports and protocols training simulation.</p>
-                    <a href="https://cyberdowdy2025.github.io/Ports-Protocols-Classic-/" class="sim-link" target="_blank">Launch Simulation →</a>
-                </div>
-
-                <div class="sim-card">
-                    <div class="level-badge">Prototype</div>
-                    <h3 class="sim-title">Original CyberHub Page</h3>
-                    <p class="sim-description">The original CyberHub interface and training portal prototype.</p>
-                    <a href="https://cyberdowdy2025.github.io/Original-Cyberhub-Page/" class="sim-link" target="_blank">Launch Simulation →</a>
+                    <div class="card-header">
+                        <h3>Firewall Configuration Level 2</h3>
+                        <span class="cert-tag security-plus-tag">Security+</span>
+                    </div>
+                    <p class="card-description">Advanced firewall policies, ACLs, and enterprise security implementations.</p>
+                    <a href="https://cyberdowdy2025.github.io/Firewall-Lvl-2/" target="_blank" rel="noopener noreferrer" class="launch-btn">
+                        <span>Launch Simulation</span>
+                        <span class="arrow">→</span>
+                    </a>
                 </div>
             </div>
-        </div>
+        </section>
+
+        <!-- 3D Simulations Section -->
+        <section class="certification-section">
+            <div class="section-header">
+                <h2 class="cert-title">
+                    <span class="cert-icon">🎮</span>
+                    3D Simulations (Brand New)
+                </h2>
+                <div class="cert-badge special-badge">NEW</div>
+            </div>
+            <div class="simulations-grid">
+                <div class="sim-card">
+                    <div class="card-header">
+                        <h3>Goals 2026 Simulation</h3>
+                        <span class="cert-tag special-tag">3D</span>
+                    </div>
+                    <p class="card-description">Immersive 3D cybersecurity training environment with interactive scenarios.</p>
+                    <a href="https://cyberdowdy2025.github.io/Goals-2026-Simulation/" target="_blank" rel="noopener noreferrer" class="launch-btn">
+                        <span>Launch Simulation</span>
+                        <span class="arrow">→</span>
+                    </a>
+                </div>
+
+                <div class="sim-card">
+                    <div class="card-header">
+                        <h3>Goals 2026 Simulation II</h3>
+                        <span class="cert-tag special-tag">3D</span>
+                    </div>
+                    <p class="card-description">Advanced 3D simulation with enhanced graphics and complex security challenges.</p>
+                    <a href="https://cyberdowdy2025.github.io/Goals-2026-Simulation-II/" target="_blank" rel="noopener noreferrer" class="launch-btn">
+                        <span>Launch Simulation</span>
+                        <span class="arrow">→</span>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Prototype Simulations Section -->
+        <section class="certification-section">
+            <div class="section-header">
+                <h2 class="cert-title">
+                    <span class="cert-icon">🧪</span>
+                    Prototype Simulations
+                </h2>
+                <div class="cert-badge prototype-badge">BETA</div>
+            </div>
+            <div class="simulations-grid">
+                <div class="sim-card">
+                    <div class="card-header">
+                        <h3>Firewall I (Prototype)</h3>
+                        <span class="cert-tag prototype-tag">Beta</span>
+                    </div>
+                    <p class="card-description">Early version firewall configuration training with basic rule implementation.</p>
+                    <a href="https://cyberdowdy2025.github.io/Firewall-I/" target="_blank" rel="noopener noreferrer" class="launch-btn">
+                        <span>Launch Simulation</span>
+                        <span class="arrow">→</span>
+                    </a>
+                </div>
+
+                <div class="sim-card">
+                    <div class="card-header">
+                        <h3>Firewall II (Prototype)</h3>
+                        <span class="cert-tag prototype-tag">Beta</span>
+                    </div>
+                    <p class="card-description">Advanced prototype featuring complex firewall scenarios and configurations.</p>
+                    <a href="https://cyberdowdy2025.github.io/Firewall-II/" target="_blank" rel="noopener noreferrer" class="launch-btn">
+                        <span>Launch Simulation</span>
+                        <span class="arrow">→</span>
+                    </a>
+                </div>
+
+                <div class="sim-card">
+                    <div class="card-header">
+                        <h3>Malware Identity Quest</h3>
+                        <span class="cert-tag prototype-tag">Beta</span>
+                    </div>
+                    <p class="card-description">Interactive game-based malware identification and classification training.</p>
+                    <a href="https://cyberdowdy2025.github.io/Malware-Identity-Quest/" target="_blank" rel="noopener noreferrer" class="launch-btn">
+                        <span>Launch Simulation</span>
+                        <span class="arrow">→</span>
+                    </a>
+                </div>
+
+                <div class="sim-card">
+                    <div class="card-header">
+                        <h3>NetOps Game</h3>
+                        <span class="cert-tag prototype-tag">Beta</span>
+                    </div>
+                    <p class="card-description">Gamified network operations training with real-time decision making.</p>
+                    <a href="https://cyberdowdy2025.github.io/NetOps-Game/" target="_blank" rel="noopener noreferrer" class="launch-btn">
+                        <span>Launch Simulation</span>
+                        <span class="arrow">→</span>
+                    </a>
+                </div>
+
+                <div class="sim-card">
+                    <div class="card-header">
+                        <h3>Phishing Arcade Game</h3>
+                        <span class="cert-tag prototype-tag">Beta</span>
+                    </div>
+                    <p class="card-description">Arcade-style phishing detection game with scoring and leaderboards.</p>
+                    <a href="https://cyberdowdy2025.github.io/Phishing-Arcade-Game/" target="_blank" rel="noopener noreferrer" class="launch-btn">
+                        <span>Launch Simulation</span>
+                        <span class="arrow">→</span>
+                    </a>
+                </div>
+
+                <div class="sim-card">
+                    <div class="card-header">
+                        <h3>Phishing Simulation II</h3>
+                        <span class="cert-tag prototype-tag">Beta</span>
+                    </div>
+                    <p class="card-description">Second iteration of phishing training with improved detection mechanics.</p>
+                    <a href="https://cyberdowdy2025.github.io/Phishing-Simulation-II/" target="_blank" rel="noopener noreferrer" class="launch-btn">
+                        <span>Launch Simulation</span>
+                        <span class="arrow">→</span>
+                    </a>
+                </div>
+
+                <div class="sim-card">
+                    <div class="card-header">
+                        <h3>Ports & Protocols Classic</h3>
+                        <span class="cert-tag prototype-tag">Beta</span>
+                    </div>
+                    <p class="card-description">Original version of ports and protocols training simulation.</p>
+                    <a href="https://cyberdowdy2025.github.io/Ports-Protocols-Classic-/" target="_blank" rel="noopener noreferrer" class="launch-btn">
+                        <span>Launch Simulation</span>
+                        <span class="arrow">→</span>
+                    </a>
+                </div>
+
+                <div class="sim-card">
+                    <div class="card-header">
+                        <h3>Original CyberHub Page</h3>
+                        <span class="cert-tag prototype-tag">Beta</span>
+                    </div>
+                    <p class="card-description">Legacy CyberHub interface with classic simulation access.</p>
+                    <a href="https://cyberdowdy2025.github.io/Original-Cyberhub-Page/" target="_blank" rel="noopener noreferrer" class="launch-btn">
+                        <span>Launch Simulation</span>
+                        <span class="arrow">→</span>
+                    </a>
+                </div>
+            </div>
+        </section>
 
         <!-- Coming Soon Section -->
-        <div class="cert-section">
-            <div class="cert-header">
-                <div class="cert-icon">🚀</div>
-                <h2 class="cert-title">Coming Soon!</h2>
+        <section class="certification-section coming-soon-section">
+            <div class="section-header">
+                <h2 class="cert-title">
+                    <span class="cert-icon">🚀</span>
+                    Coming Soon
+                </h2>
             </div>
             <div class="simulations-grid">
-                <div class="sim-card password-protected" id="windowsVMCard">
-                    <div class="level-badge">In Development</div>
-                    <h3 class="sim-title">Windows Virtual Machine</h3>
-                    <p class="sim-description">Full Windows VM simulation for advanced system administration and security training.</p>
-                    <a href="https://cyberdowdy2025.github.io/Windows-VM/" class="sim-link" target="_blank" id="windowsVMLink" style="pointer-events: none; opacity: 0.5;">Launch Simulation →</a>
-
-                    <div class="password-overlay" id="passwordOverlay">
-                        <div class="lock-icon">🔒</div>
-                        <div class="password-text">Password Required</div>
-                        <input type="password" class="password-input" id="passwordInput" placeholder="Enter password">
-                        <button class="password-btn" onclick="checkPassword()">Unlock</button>
-                        <div class="error-message" id="errorMessage"></div>
+                <div class="sim-card coming-soon-card-special">
+                    <div class="card-header">
+                        <h3>CyberQuest</h3>
+                        <span class="cert-tag coming-soon-tag">Soon</span>
                     </div>
+                    <p class="card-description">Epic cybersecurity adventure with quest-based learning and achievements.</p>
+                    <button onclick="unlockSimulation('https://cyberdowdy2025.github.io/cyberquest/')" class="launch-btn password-protected-btn">
+                        <span>🔒 Password Required</span>
+                        <span class="arrow">→</span>
+                    </button>
+                </div>
+
+                <div class="sim-card coming-soon-card-special">
+                    <div class="card-header">
+                        <h3>Windows VM</h3>
+                        <span class="cert-tag coming-soon-tag">Soon</span>
+                    </div>
+                    <p class="card-description">Full Windows virtual machine environment for hands-on system administration.</p>
+                    <button onclick="unlockSimulation('https://cyberdowdy2025.github.io/Windows-VM/')" class="launch-btn password-protected-btn">
+                        <span>🔒 Password Required</span>
+                        <span class="arrow">→</span>
+                    </button>
                 </div>
             </div>
-        </div>
+        </section>
 
+        <!-- Footer -->
         <footer>
-            <p>🔒 CyberHub - Empowering the Next Generation of Cybersecurity Professionals 🔒</p>
-            <p style="margin-top: 10px; font-size: 0.9em;">© 2025 CyberHub Training Platform</p>
+            <p>&copy; 2026 CyberHub. All rights reserved.</p>
+            <p class="footer-tagline">Empowering the next generation of cybersecurity professionals</p>
         </footer>
     </div>
 
-    <script>
-        // Generate random stars
-        const starsContainer = document.getElementById('stars');
-        for (let i = 0; i < 100; i++) {
-            const star = document.createElement('div');
-            star.className = 'star';
-            star.style.left = Math.random() * 100 + '%';
-            star.style.top = Math.random() * 100 + '%';
-            star.style.animationDelay = Math.random() * 3 + 's';
-            starsContainer.appendChild(star);
-        }
 
-        // Generate binary streams
-        const binaryBg = document.getElementById('binaryBg');
-        function createBinaryStream() {
-            const stream = document.createElement('div');
-            stream.className = 'binary-stream';
+    <!-- Password Modal -->
+    <div id="password-modal" class="modal">
+        <div class="modal-content">
+            <h2>🔒 Enter Password</h2>
+            <p>This simulation requires a password to access.</p>
+            <input type="password" id="password-input" placeholder="Enter password..." />
+            <div class="modal-buttons">
+                <button onclick="checkPassword()" class="modal-btn confirm-btn">Unlock</button>
+                <button onclick="closeModal()" class="modal-btn cancel-btn">Cancel</button>
+            </div>
+            <p id="error-message" class="error-message"></p>
+        </div>
+    </div>
 
-            let binaryText = '';
-            for (let i = 0; i < 50; i++) {
-                binaryText += Math.random() > 0.5 ? '1' : '0';
-            }
-            stream.textContent = binaryText;
-
-            stream.style.left = Math.random() * 100 + '%';
-            stream.style.animationDuration = (Math.random() * 10 + 10) + 's';
-            stream.style.animationDelay = Math.random() * 5 + 's';
-
-            binaryBg.appendChild(stream);
-
-            setTimeout(() => {
-                stream.remove();
-            }, 20000);
-        }
-
-        // Create initial binary streams
-        for (let i = 0; i < 30; i++) {
-            createBinaryStream();
-        }
-
-        // Continuously create new streams
-        setInterval(createBinaryStream, 2000);
-
-        // Countdown Timer
-        function updateCountdown() {
-            const newYear = new Date('January 1, 2026 00:00:00').getTime();
-            const now = new Date().getTime();
-            const distance = newYear - now;
-
-            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-            document.getElementById('days').textContent = String(days).padStart(2, '0');
-            document.getElementById('hours').textContent = String(hours).padStart(2, '0');
-            document.getElementById('minutes').textContent = String(minutes).padStart(2, '0');
-            document.getElementById('seconds').textContent = String(seconds).padStart(2, '0');
-
-            if (distance < 0) {
-                document.getElementById('countdown').innerHTML = '<div style="font-size: 2em; color: #00ffff;">🎉 Happy New Year 2026! 🎉</div>';
-            }
-        }
-
-        updateCountdown();
-        setInterval(updateCountdown, 1000);
-
-        // Password Protection
-        function checkPassword() {
-            const input = document.getElementById('passwordInput').value;
-            const errorMessage = document.getElementById('errorMessage');
-
-            if (input === 'Windows') {
-                document.getElementById('passwordOverlay').style.display = 'none';
-                document.getElementById('windowsVMLink').style.pointerEvents = 'auto';
-                document.getElementById('windowsVMLink').style.opacity = '1';
-            } else {
-                errorMessage.textContent = 'Incorrect password. Try again.';
-                document.getElementById('passwordInput').value = '';
-            }
-        }
-
-        // Allow Enter key to submit password
-        document.getElementById('passwordInput').addEventListener('keypress', function(event) {
-            if (event.key === 'Enter') {
-                checkPassword();
-            }
-        });
-
-        // Add smooth scroll behavior
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({ behavior: 'smooth' });
-                }
-            });
-        });
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>
